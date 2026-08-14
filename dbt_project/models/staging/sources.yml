@@ -1,0 +1,23 @@
+version: 2
+
+sources:
+  - name: donki_raw
+    schema: main
+    description: Raw DONKI space weather data, loaded by Python extraction scripts.
+    tables:
+      - name: raw_flr
+        description: Solar flare events, one row per flare.
+
+      - name: raw_cme
+        description: Coronal mass ejection events, one row per CME.
+      - name: raw_cme_analyses
+        description: CME analyses, one row per modeling attempt on a CME (many per CME).
+      - name: raw_cme_enlil
+        description: WSA-Enlil model runs, one row per run (many per analysis).
+      - name: raw_cme_impacts
+        description: Predicted spacecraft impacts per Enlil run.
+
+      - name: raw_gst
+        description: Geomagnetic storm events, one row per storm.
+      - name: raw_gst_kp_index
+        description: Kp index readings, one row per reading (many per storm).
