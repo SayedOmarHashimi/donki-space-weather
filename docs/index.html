@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>DONKI · Space Weather Station</title>
+  <script>document.documentElement.classList.add('js-ready')</script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
@@ -41,6 +42,12 @@
     .wrap{max-width:1060px;margin:0 auto;padding:0 24px 72px}
     .serif{font-family:var(--serif);font-optical-sizing:auto}
     .tnum{font-variant-numeric:tabular-nums}
+    /* scroll-reveal (gated on js-ready so no-JS visitors always see content) */
+    @media (prefers-reduced-motion: no-preference){
+      html.js-ready .reveal{opacity:0;transform:translateY(22px);
+        transition:opacity .7s ease, transform .7s cubic-bezier(.2,.7,.2,1)}
+      html.js-ready .reveal.in{opacity:1;transform:none}
+    }
 
     /* ---------- header ---------- */
     header{display:flex;align-items:center;justify-content:space-between;gap:16px;
@@ -104,7 +111,9 @@
     /* ---------- stats ---------- */
     .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:12px}
     .stat{background:var(--card);border:1px solid var(--line);border-radius:16px;
-      padding:18px 20px;display:flex;flex-direction:column;gap:6px;position:relative;overflow:hidden}
+      padding:18px 20px;display:flex;flex-direction:column;gap:6px;position:relative;overflow:hidden;
+      transition:transform .2s ease, box-shadow .2s ease, border-color .2s ease}
+    .stat:hover{transform:translateY(-3px);box-shadow:0 16px 32px -20px rgba(60,40,20,.55);border-color:rgba(196,106,52,.35)}
     .stat::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--accent,var(--terra))}
     .stat .n{font-family:var(--serif);font-weight:900;font-size:34px;line-height:1;color:var(--ink);font-variant-numeric:tabular-nums}
     .stat .l{font-size:10.5px;letter-spacing:1.4px;text-transform:uppercase;color:var(--muted);font-weight:600}
@@ -173,7 +182,7 @@
       <div class="status"><span class="dot"></span><span id="updated">syncing…</span></div>
     </header>
 
-    <section class="live" id="live">
+    <section class="live reveal" id="live">
       <div class="live-head"><span class="live-dot"></span>Live Now</div>
       <div class="live-cells">
         <div class="lcell"><span class="lk">Current Kp · est</span><span class="lv" id="lv-kp">—</span></div>
@@ -184,7 +193,7 @@
       <div class="live-upd" id="live-upd">connecting…</div>
     </section>
 
-    <section class="hero">
+    <section class="hero reveal">
       <div class="gauge-cell">
         <svg id="gauge" viewBox="0 0 340 200" role="img" aria-label="Kp index gauge"></svg>
         <div class="gauge-readout"><span class="kpval" id="kp-num">0.00</span><span class="kpunit">Kp</span></div>
@@ -206,24 +215,24 @@
       </div>
     </section>
 
-    <div class="stats">
+    <div class="stats reveal">
       <div class="stat" style="--accent:var(--terra)"><span class="n" id="s-flr">0</span><span class="l">Solar Flares</span></div>
       <div class="stat" style="--accent:var(--teal)"><span class="n" id="s-cme">0</span><span class="l">Coronal Mass Ejections</span></div>
       <div class="stat" style="--accent:var(--plum)"><span class="n" id="s-gst">0</span><span class="l">Geomagnetic Storms</span></div>
     </div>
 
-    <div class="section-head">
+    <div class="section-head reveal">
       <span class="tick"></span>
       <h2>Event Timeline</h2>
       <span class="hint" id="feed-hint"></span>
     </div>
-    <div class="filters" id="filters">
+    <div class="filters reveal" id="filters">
       <button class="chip active" data-type="ALL">All</button>
       <button class="chip" data-type="FLR"><span class="cdot" style="background:var(--terra)"></span>Flares</button>
       <button class="chip" data-type="CME"><span class="cdot" style="background:var(--teal)"></span>CMEs</button>
       <button class="chip" data-type="GST"><span class="cdot" style="background:var(--plum)"></span>Storms</button>
     </div>
-    <div class="feed">
+    <div class="feed reveal">
       <div class="feed-scroll" id="feed"></div>
     </div>
 
@@ -352,9 +361,31 @@
   function renderStats(events){
     const counts={FLR:0,CME:0,GST:0};
     events.forEach(e=>{if(counts[e.event_type]!=null)counts[e.event_type]++;});
-    document.getElementById("s-flr").textContent=counts.FLR;
-    document.getElementById("s-cme").textContent=counts.CME;
-    document.getElementById("s-gst").textContent=counts.GST;
+    const map={"s-flr":counts.FLR,"s-cme":counts.CME,"s-gst":counts.GST};
+    for(const id in map){const el=document.getElementById(id);el.dataset.target=map[id];el.textContent="0";}
+  }
+
+  const REDUCE=window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  function countUp(el,target,dur=900){
+    if(REDUCE||target<=0){el.textContent=target;return;}
+    const start=performance.now();
+    (function f(now){
+      const p=Math.min(1,(now-start)/dur),e=1-Math.pow(1-p,3);
+      el.textContent=Math.round(target*e);
+      if(p<1)requestAnimationFrame(f);else el.textContent=target;
+    })(start);
+  }
+  function setupReveal(){
+    const els=[...document.querySelectorAll(".reveal")];
+    const show=el=>{
+      el.classList.add("in");
+      el.querySelectorAll(".n[data-target]").forEach(n=>countUp(n,+n.dataset.target));
+    };
+    if(REDUCE||!("IntersectionObserver" in window)){els.forEach(show);return;}
+    const io=new IntersectionObserver((entries,obs)=>{
+      entries.forEach(en=>{if(en.isIntersecting){show(en.target);obs.unobserve(en.target);}});
+    },{threshold:.15,rootMargin:"0px 0px -40px 0px"});
+    els.forEach(el=>io.observe(el));
   }
 
   function renderFeed(events){
@@ -459,6 +490,7 @@
     try{
       renderAurora(aurora);
       renderTimeline(timeline);
+      setupReveal();
       const upd=parseUTC(aurora.calculated_at);
       document.getElementById("updated").textContent=
         (live?"UPDATED ":"SNAPSHOT ")+`${pad(upd.getUTCDate())} ${MON[upd.getUTCMonth()]} ${pad(upd.getUTCHours())}:${pad(upd.getUTCMinutes())} UTC`;
