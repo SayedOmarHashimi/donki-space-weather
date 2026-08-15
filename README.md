@@ -4,7 +4,7 @@ A live, public, **self-updating** space-weather dashboard built on a real data-e
 
 **🔗 Live site: https://sayedomarhashimi.github.io/donki-space-weather/**
 
-It tracks solar flares, coronal mass ejections (CMEs), and geomagnetic storms from NASA's [DONKI](https://ccmc.gsfc.nasa.gov/tools/DONKI/) database, turns them into an aurora-visibility outlook and an event timeline, and layers **real-time current conditions** from NOAA on top.
+It tracks solar flares, coronal mass ejections (CMEs), and geomagnetic storms from NASA's [DONKI](https://ccmc.gsfc.nasa.gov/tools/DONKI/) database, turns them into an aurora-visibility outlook and an **interactive event calendar**, and layers **real-time current conditions** from NOAA on top.
 
 ---
 
@@ -27,14 +27,15 @@ flowchart LR
     A[NASA DONKI API] -->|Python + requests| B[(DuckDB<br/>raw_* tables)]
     B -->|dbt: staging views| C[7 staging models<br/>clean + typed]
     C -->|dbt: marts tables| D[aurora_forecast<br/>space_weather_timeline]
-    D -->|export_json.py| E[docs/data/*.json]
+    D -->|export_json.py<br/>merge into archive| E[docs/data/*.json<br/>full event history]
     E --> F[GitHub Pages<br/>static dashboard]
+    E -.->|browser re-fetch<br/>every 5 min| F
     N[NOAA SWPC API] -.->|live, in-browser<br/>every 60s| F
     G([GitHub Actions<br/>daily cron]) -.->|runs the entire chain| B
 ```
 
 **Two data layers, honestly labeled:**
-- **DONKI pipeline** → a daily-refreshed *event history* (what happened in the last 7 days).
+- **DONKI pipeline** → a daily-refreshed *event history*. Each run pulls a trailing 7-day window from NASA, but the exporter **accumulates** into `timeline.json`, so the calendar keeps every event since launch — a permanent, growing archive.
 - **NOAA "Live Now" strip** → *real-time current conditions* (planetary Kp + storm scales), fetched directly in the browser every 60 seconds — no server, no pipeline.
 
 ---
@@ -83,12 +84,15 @@ strptime("beginTime", '%Y-%m-%dT%H:%MZ')     as begin_time,
 
 Reads the two marts over a **read-only** DuckDB connection and writes them to `docs/data/aurora_forecast.json` and `docs/data/timeline.json` — the exact files the front-end fetches.
 
+The timeline export **merges** fresh events into the already-committed `timeline.json`, keyed by `event_id`: new or revised events win on conflict (so DONKI corrections propagate), while events that have aged out of the 7-day extraction window are preserved. This makes the git-tracked JSON the durable archive — it accumulates all history since launch and is self-healing even if the DuckDB warehouse cache is ever lost. The merge is idempotent and output stays sorted newest-first.
+
 ### 5. Front-end — static HTML/CSS/JS (`docs/index.html`)
 
 A single, dependency-free page (no build step, no framework):
 - A **custom inline-SVG Kp gauge** (animated needle, threshold color bands) — hand-drawn in JS, no charting library.
 - The **"Live Now" strip** — fetches NOAA SWPC feeds client-side and auto-refreshes every 60s.
-- An **interactive, filterable event timeline** (filter by flares / CMEs / storms).
+- An **interactive event calendar** — a month grid with per-day event counts and type-colored dots, month navigation, a "Latest" jump, type filters (flares / CMEs / storms), and a detail panel for the selected day. A footer line reports the archive size and its launch date.
+- **Background auto-refresh** — the page re-fetches the published JSON every 5 minutes (and whenever the tab regains focus), updating in place without disturbing the current month, selected day, or filter.
 - Tasteful **scroll-reveal + count-up animations** (vanilla `IntersectionObserver`, reduced-motion-safe).
 - Served from the `docs/` folder by **GitHub Pages**.
 
@@ -96,9 +100,11 @@ A single, dependency-free page (no build step, no framework):
 
 The Airflow stand-in. On a **daily cron (06:00 UTC)** (and on-demand), a runner:
 
-1. Installs dependencies and restores the DuckDB warehouse from an Actions **cache** (so history persists across runs).
-2. Runs the three extractors → **dbt run** → the JSON export.
+1. Installs dependencies and restores the DuckDB warehouse from an Actions **cache** (a working-set optimization so the extractors have recent raw data on hand).
+2. Runs the three extractors → **dbt run** → the JSON export (which merges into the committed archive).
 3. **Commits the refreshed JSON back to the repo**, which triggers a GitHub Pages redeploy.
+
+Long-term history durability comes from the git-tracked `timeline.json`, not the Actions cache — so even if the cache is evicted, the accumulated archive survives and the next run rebuilds on top of it.
 
 The result: the site updates itself with zero human involvement, entirely on free infrastructure.
 
@@ -121,7 +127,7 @@ The result: the site updates itself with zero human involvement, entirely on fre
 ## Project structure
 
 ```
-donki-pipeline/
+donki-space-weather/
 ├── extraction/              # Python: NASA API → DuckDB (idempotent upserts)
 │   ├── donki_flr.py
 │   ├── donki_cme.py
@@ -132,10 +138,10 @@ donki-pipeline/
 │       ├── staging/         # 7 view models: rename, type, clean
 │       └── marts/           # aurora_forecast, space_weather_timeline
 ├── exports/
-│   └── export_json.py       # marts → docs/data/*.json
+│   └── export_json.py       # marts → docs/data/*.json (merges into the archive)
 ├── docs/                    # GitHub Pages source
-│   ├── index.html           # the dashboard
-│   └── data/                # published JSON (auto-refreshed)
+│   ├── index.html           # the dashboard (interactive calendar)
+│   └── data/                # published JSON — timeline.json is the growing archive
 └── .github/workflows/
     └── refresh-data.yml     # daily extract → dbt → export → commit
 ```
