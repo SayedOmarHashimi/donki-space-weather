@@ -1,8 +1,10 @@
 import json
+import os
 import duckdb
 
 DB_PATH = "warehouse/space_data.duckdb"
 OUTPUT_DIR = "docs/data"
+TIMELINE_PATH = f"{OUTPUT_DIR}/timeline.json"
 
 def export_aurora_forecast(con):
     result = con.execute("""
@@ -33,6 +35,20 @@ def export_aurora_forecast(con):
     print(f"Exported aurora_forecast.json ({'1 record' if data else 'no data'})")
 
 
+def load_existing_timeline() -> list[dict]:
+    """Read the previously committed timeline so history survives even if the
+    DuckDB warehouse cache is lost. The committed JSON in git is the durable
+    archive; the warehouse is only a rolling working set."""
+    if not os.path.exists(TIMELINE_PATH):
+        return []
+    try:
+        with open(TIMELINE_PATH) as f:
+            data = json.load(f)
+        return data if isinstance(data, list) else []
+    except (json.JSONDecodeError, OSError):
+        return []
+
+
 def export_timeline(con):
     result = con.execute("""
         SELECT
@@ -53,10 +69,24 @@ def export_timeline(con):
             if hasattr(value, "isoformat"):
                 row[key] = value.isoformat()
 
-    with open(f"{OUTPUT_DIR}/timeline.json", "w") as f:
-        json.dump(rows, f, indent=2)
+    # Merge fresh rows into the committed archive, keyed by event_id. Newly
+    # exported events win on conflict (so DONKI revisions propagate), while
+    # events that have aged out of the warehouse window are preserved.
+    merged = {e["event_id"]: e for e in load_existing_timeline() if e.get("event_id")}
+    for e in rows:
+        merged[e["event_id"]] = e
 
-    print(f"Exported timeline.json ({len(rows)} records)")
+    combined = sorted(
+        merged.values(), key=lambda e: e.get("event_time") or "", reverse=True
+    )
+
+    with open(TIMELINE_PATH, "w") as f:
+        json.dump(combined, f, indent=2)
+
+    print(
+        f"Exported timeline.json ({len(combined)} records total, "
+        f"{len(rows)} from this run's warehouse)"
+    )
 
 
 def main():

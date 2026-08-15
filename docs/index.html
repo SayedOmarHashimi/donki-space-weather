@@ -288,6 +288,7 @@
     </div>
 
     <footer>
+      <span id="archive-line"></span><br>
       Data: <a href="https://ccmc.gsfc.nasa.gov/tools/DONKI/" target="_blank" rel="noopener">NASA DONKI</a>
       · Kp thresholds per NOAA SWPC · refreshed daily<br>
       Pipeline: NASA API → Python → DuckDB → dbt → JSON → GitHub Pages
@@ -527,9 +528,18 @@
     drawCalendar();renderDetail();
   }
 
+  function renderArchiveLine(events){
+    const el=document.getElementById("archive-line");
+    if(!el)return;
+    if(!events.length){el.textContent="Archive building — awaiting first events";return;}
+    const earliest=events.reduce((a,b)=>parseUTC(a.event_time)<parseUTC(b.event_time)?a:b);
+    el.textContent=`Archive: ${events.length} event${events.length>1?"s":""} logged since ${fmtDay(earliest.event_time)}`;
+  }
+
   function renderTimeline(events){
     ALL_EVENTS=events;
     renderStats(events);
+    renderArchiveLine(events);
     document.getElementById("cal-dow").innerHTML=DOW.map(d=>`<span>${d}</span>`).join("");
     document.getElementById("cal-prev").addEventListener("click",()=>shiftMonth(-1));
     document.getElementById("cal-next").addEventListener("click",()=>shiftMonth(1));
