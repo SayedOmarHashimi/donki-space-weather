@@ -408,6 +408,7 @@
   }
 
   let ALL_EVENTS=[], curFilter="ALL", calYear, calMonth, selKey=null;
+  let auroraSig=null, timelineSig=null;   // last-seen data fingerprints for background refresh
   const TYPE_HINT={ALL:"events",FLR:"flares",CME:"CMEs",GST:"storms"};
   const MONTH_FULL=["January","February","March","April","May","June","July","August","September","October","November","December"];
   const DOW=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
@@ -536,6 +537,30 @@
     el.textContent=`Archive: ${events.length} event${events.length>1?"s":""} logged since ${fmtDay(earliest.event_time)}`;
   }
 
+  /* cheap change-detector so background polls only re-render on real updates */
+  function timelineSignature(t){
+    if(!t.length)return "0";
+    let newest=t[0];
+    for(const e of t){if(parseUTC(e.event_time)>parseUTC(newest.event_time))newest=e;}
+    return `${t.length}|${newest.event_id}|${newest.event_time}`;
+  }
+  /* set stats to their final value directly (used on refresh, after the
+     reveal count-up animation has already run) */
+  function updateStatsDirect(events){
+    const counts={FLR:0,CME:0,GST:0};
+    events.forEach(e=>{if(counts[e.event_type]!=null)counts[e.event_type]++;});
+    const map={"s-flr":counts.FLR,"s-cme":counts.CME,"s-gst":counts.GST};
+    for(const id in map){const el=document.getElementById(id);el.dataset.target=map[id];el.textContent=map[id];}
+  }
+  /* refresh data in place, preserving the viewer's month / selected day / filter */
+  function refreshTimeline(events){
+    ALL_EVENTS=events;
+    updateStatsDirect(events);
+    renderArchiveLine(events);
+    drawCalendar();
+    renderDetail();
+  }
+
   function renderTimeline(events){
     ALL_EVENTS=events;
     renderStats(events);
@@ -613,13 +638,50 @@
       renderAurora(aurora);
       renderTimeline(timeline);
       setupReveal();
-      const upd=parseUTC(aurora.calculated_at);
-      document.getElementById("updated").textContent=
-        (live?"UPDATED ":"SNAPSHOT ")+`${pad(upd.getUTCDate())} ${MON[upd.getUTCMonth()]} ${pad(upd.getUTCHours())}:${pad(upd.getUTCMinutes())} UTC`;
+      auroraSig=aurora&&aurora.calculated_at;
+      timelineSig=timelineSignature(timeline);
+      setUpdatedStamp(aurora,live);
     }catch(err){
       document.querySelector(".wrap").innerHTML='<div class="err">Failed to render: '+err.message+'</div>';
     }
+    if(live)startPolling();
   })();
+
+  function setUpdatedStamp(aurora,live){
+    const upd=parseUTC(aurora.calculated_at);
+    document.getElementById("updated").textContent=
+      (live?"UPDATED ":"SNAPSHOT ")+`${pad(upd.getUTCDate())} ${MON[upd.getUTCMonth()]} ${pad(upd.getUTCHours())}:${pad(upd.getUTCMinutes())} UTC`;
+  }
+
+  /* ---------- background refresh ----------
+     The pipeline commits new data ~daily. Re-fetch on a gentle interval (and
+     whenever the tab regains focus) so an open page picks up new events without
+     a manual reload. Only re-renders when the data actually changed, and never
+     disturbs the viewer's current month, selected day, or filter. */
+  async function pollData(){
+    if(document.hidden)return;
+    let aurora,timeline;
+    try{
+      [aurora,timeline]=await Promise.all([
+        fetchJSON("data/aurora_forecast.json"),
+        fetchJSON("data/timeline.json")
+      ]);
+    }catch(err){return;}   // transient failure — keep showing current data
+    if(aurora&&aurora.calculated_at!==auroraSig){
+      auroraSig=aurora.calculated_at;
+      renderAurora(aurora);
+      setUpdatedStamp(aurora,true);
+    }
+    const tSig=timelineSignature(timeline);
+    if(tSig!==timelineSig){
+      timelineSig=tSig;
+      refreshTimeline(timeline);
+    }
+  }
+  function startPolling(){
+    setInterval(pollData,300000);   // every 5 minutes
+    document.addEventListener("visibilitychange",()=>{if(!document.hidden)pollData();});
+  }
 
   loadLive();
   setInterval(loadLive, 60000);
