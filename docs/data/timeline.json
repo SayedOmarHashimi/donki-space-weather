@@ -1,5 +1,19 @@
 [
   {
+    "event_id": "2026-08-16T19:48:00-CME-001",
+    "event_type": "CME",
+    "event_time": "2026-08-16T19:48:00",
+    "description": "Coronal mass ejection from N10W42",
+    "severity_score": null
+  },
+  {
+    "event_id": "2026-08-16T19:01:00-FLR-001",
+    "event_type": "FLR",
+    "event_time": "2026-08-16T19:28:00",
+    "description": "Class C8.2 solar flare",
+    "severity_score": 8.2
+  },
+  {
     "event_id": "2026-08-15T13:48:00-CME-001",
     "event_type": "CME",
     "event_time": "2026-08-15T13:48:00",
