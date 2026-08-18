@@ -329,6 +329,12 @@
 
   const MON=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
   const pad=n=>String(n).padStart(2,"0");
+  /* Aurora-chance buckets — mirror of the dbt aurora_forecast mart:
+     Kp >= 7 -> high, Kp >= 5 -> moderate, else low. */
+  const classifyAurora=kp=>kp>=7?"high":kp>=5?"moderate":"low";
+  /* Once the live NOAA reading has driven the meter, the (older) DONKI
+     snapshot must never overwrite it back to a stale storm reading. */
+  let liveAuroraActive=false;
   const CHANCE_COLOR={low:"var(--sage)",moderate:"var(--terra)",high:"var(--storm)"};
   const CHANCE_DESC={
     low:"Quiet geomagnetic field. Aurora unlikely except at very high latitudes.",
@@ -342,6 +348,15 @@
   }
   function fmtTime(s){const d=parseUTC(s);return `${pad(d.getUTCHours())}:${pad(d.getUTCMinutes())}`;}
   function fmtDay(s){const d=parseUTC(s);return `${d.getUTCDate()} ${MON[d.getUTCMonth()]} ${d.getUTCFullYear()}`;}
+  function humanAgo(ms){
+    const m=Math.max(0,Math.round(ms/60000));
+    if(m<1)return "just now";
+    if(m<60)return `${m} min ago`;
+    const h=Math.floor(m/60);
+    if(h<24)return `${h} h ago`;
+    const d=Math.floor(h/24);
+    return `${d} day${d>1?"s":""} ago`;
+  }
 
   /* ---------- gauge ---------- */
   const CX=170,CY=180,R=138,SVGNS="http://www.w3.org/2000/svg";
@@ -354,6 +369,7 @@
   }
   function mk(tag,attrs){const e=document.createElementNS(SVGNS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);return e;}
 
+  let gaugeKp=0;   // last value the needle settled on, so refreshes tween from it
   function drawGauge(kp){
     const g=document.getElementById("gauge");g.innerHTML="";
     const zones=[[0,5,"var(--sage)"],[5,7,"var(--terra)"],[7,9,"var(--storm)"]];
@@ -373,9 +389,12 @@
     g.appendChild(mk("circle",{cx:CX,cy:CY,r:3.2,fill:"var(--ink)"}));
 
     const num=document.getElementById("kp-num");
-    const start=performance.now(),dur=1400,ease=t=>1-Math.pow(1-t,3);
+    const from=gaugeKp;                         // tween from wherever the needle sits now
+    const dur=Math.abs(kp-from)<1e-3?0:1200;    // no animation if the value didn't change
+    const start=performance.now(),ease=t=>1-Math.pow(1-t,3);
+    gaugeKp=kp;
     (function frame(now){
-      const p=Math.min(1,(now-start)/dur),e=ease(p),cur=kp*e;
+      const p=dur?Math.min(1,(now-start)/dur):1,e=ease(p),cur=from+(kp-from)*e;
       needle.setAttribute("transform",`rotate(${90-kpAngle(cur)} ${CX} ${CY})`);
       if(num)num.textContent=cur.toFixed(2);
       if(p<1)requestAnimationFrame(frame);else if(num)num.textContent=kp.toFixed(2);
@@ -396,15 +415,17 @@
     document.getElementById("m-obs").textContent=`${fmtDay(a.last_observed_time)} · ${fmtTime(a.last_observed_time)}`;
     drawGauge(Number(a.last_kp_index));
 
-    const ageH=Math.max(0,(Date.now()-parseUTC(a.last_observed_time).getTime())/3.6e6);
+    const ageMs=Math.max(0,Date.now()-parseUTC(a.last_observed_time).getTime());
+    const ageH=ageMs/3.6e6;
     const f=document.getElementById("freshness");
-    let txt,col;
-    if(ageH<24){txt="LIVE · reading under 24h old";col="var(--sage-deep)";}
-    else{const d=Math.floor(ageH/24);txt=`STALE · last storm reading ${d} day${d>1?"s":""} ago`;col="var(--terra)";}
+    let txt,col,fresh;
+    if(ageH<3){fresh=true;col="var(--sage-deep)";txt=`LIVE · updated ${humanAgo(ageMs)}`;}
+    else if(ageH<24){fresh=true;col="var(--sage-deep)";txt=`RECENT · reading ${humanAgo(ageMs)}`;}
+    else{fresh=false;col="var(--terra)";const d=Math.floor(ageH/24);txt=`STALE · last reading ${d} day${d>1?"s":""} ago`;}
     f.innerHTML=`<span class="fdot" style="background:${col};box-shadow:0 0 9px ${col}"></span>${txt}`;
     f.style.color=col;
-    f.style.borderColor=ageH<24?"rgba(95,122,67,.4)":"rgba(196,106,52,.4)";
-    f.style.background=ageH<24?"rgba(127,154,95,.09)":"rgba(196,106,52,.08)";
+    f.style.borderColor=fresh?"rgba(95,122,67,.4)":"rgba(196,106,52,.4)";
+    f.style.background=fresh?"rgba(127,154,95,.09)":"rgba(196,106,52,.08)";
   }
 
   let ALL_EVENTS=[], curFilter="ALL", calYear, calMonth, selKey=null;
@@ -619,6 +640,20 @@
       setScale("lv-s","S",cur.S);
       const t=parseUTC(last.time_tag);
       upd.textContent=`updated ${pad(t.getUTCHours())}:${pad(t.getUTCMinutes())} UTC · auto-refresh`;
+
+      /* Drive the main meter + outlook from this live reading so it always
+         reflects the latest measurement. NOAA publishes planetary Kp
+         continuously, whereas the DONKI snapshot only moves during storms. */
+      if(!isNaN(kp)){
+        liveAuroraActive=true;
+        renderAurora({
+          last_kp_index:kp,
+          last_observed_time:last.time_tag,
+          source:"NOAA SWPC",
+          aurora_chance:classifyAurora(kp),
+          calculated_at:new Date().toISOString()
+        });
+      }
     }catch(e){
       upd.textContent="live feed unavailable";
     }
@@ -635,7 +670,10 @@
       live=false;aurora=FALLBACK_AURORA;timeline=FALLBACK_TIMELINE;
     }
     try{
-      renderAurora(aurora);
+      /* DONKI snapshot only bootstraps the meter (so the page is never empty
+         and previews offline); the live NOAA feed overrides it once it lands.
+         Guard against the rare case where the live fetch already won the race. */
+      if(!liveAuroraActive)renderAurora(aurora);
       renderTimeline(timeline);
       setupReveal();
       auroraSig=aurora&&aurora.calculated_at;
@@ -667,10 +705,15 @@
         fetchJSON("data/timeline.json")
       ]);
     }catch(err){return;}   // transient failure — keep showing current data
+    /* Skip the meter while the live NOAA feed is driving it — the DONKI
+       snapshot is always the older (storm-only) reading. Still track the
+       signature so the header sync stamp stays current. */
     if(aurora&&aurora.calculated_at!==auroraSig){
       auroraSig=aurora.calculated_at;
-      renderAurora(aurora);
-      setUpdatedStamp(aurora,true);
+      if(!liveAuroraActive){
+        renderAurora(aurora);
+        setUpdatedStamp(aurora,true);
+      }
     }
     const tSig=timelineSignature(timeline);
     if(tSig!==timelineSig){
