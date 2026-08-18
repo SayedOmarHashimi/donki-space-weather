@@ -63,6 +63,9 @@
       padding:7px 14px;background:var(--card)}
     .dot{width:8px;height:8px;border-radius:50%;background:var(--sage);
       box-shadow:0 0 0 0 rgba(127,154,95,.5);animation:pulse 2.6s infinite}
+    /* small, quiet intro dek under the masthead — must not compete with live data */
+    .about{max-width:63ch;margin:-6px 0 14px;font-size:13.5px;color:var(--muted);line-height:1.6}
+    .about b{color:var(--ink-soft);font-weight:600}
     @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(127,154,95,.5)}70%{box-shadow:0 0 0 7px rgba(127,154,95,0)}100%{box-shadow:0 0 0 0 rgba(127,154,95,0)}}
 
     /* ---------- live strip ---------- */
@@ -224,6 +227,10 @@
       </div>
       <div class="status"><span class="dot"></span><span id="updated">syncing…</span></div>
     </header>
+
+    <p class="about">Tracking <b>space weather</b> — solar flares, coronal mass ejections and geomagnetic
+      storms streaming off the Sun — and translating the planetary <b>Kp index</b> into a simple read on
+      <b>how likely you are to see the aurora tonight</b>.</p>
 
     <section class="live reveal" id="live">
       <div class="live-head"><span class="live-dot"></span>Live Now</div>
