@@ -36,7 +36,9 @@ flowchart LR
 
 **Two data layers, honestly labeled:**
 - **DONKI pipeline** → a daily-refreshed *event history*. Each run pulls a trailing 7-day window from NASA, but the exporter **accumulates** into `timeline.json`, so the calendar keeps every event since launch — a permanent, growing archive.
-- **NOAA "Live Now" strip** → *real-time current conditions* (planetary Kp + storm scales), fetched directly in the browser every 60 seconds — no server, no pipeline.
+- **NOAA real-time layer** → *current conditions* (planetary Kp + storm scales), fetched directly in the browser every 60 seconds — no server, no pipeline. This drives both the "Live Now" strip **and the main Kp gauge / aurora outlook**, so the meter always reflects the latest measurement.
+
+**Why the gauge reads live NOAA, not DONKI:** DONKI's geomagnetic-storm feed only records Kp *during storms*, so between storms it has no fresh reading and the derived `aurora_forecast.json` would sit frozen on the last storm (going progressively "stale"). NOAA SWPC publishes planetary Kp continuously, so the front-end drives the gauge, outlook, source, last-Kp and observed-time from that live feed — and falls back to the DONKI `aurora_forecast.json` snapshot only when NOAA is unreachable (or when previewing offline).
 
 ---
 
@@ -89,7 +91,7 @@ The timeline export **merges** fresh events into the already-committed `timeline
 ### 5. Front-end — static HTML/CSS/JS (`docs/index.html`)
 
 A single, dependency-free page (no build step, no framework):
-- A **custom inline-SVG Kp gauge** (animated needle, threshold color bands) — hand-drawn in JS, no charting library.
+- A **custom inline-SVG Kp gauge** (animated needle, threshold color bands) — hand-drawn in JS, no charting library. It reads the **live NOAA SWPC planetary Kp** so the meter, aurora outlook and freshness badge always reflect the latest measurement, falling back to the DONKI snapshot only if NOAA is unreachable.
 - The **"Live Now" strip** — fetches NOAA SWPC feeds client-side and auto-refreshes every 60s.
 - An **interactive event calendar** — a month grid with per-day event counts and type-colored dots, month navigation, a "Latest" jump, type filters (flares / CMEs / storms), and a detail panel for the selected day. A footer line reports the archive size and its launch date.
 - **Background auto-refresh** — the page re-fetches the published JSON every 5 minutes (and whenever the tab regains focus), updating in place without disturbing the current month, selected day, or filter.
