@@ -1,5 +1,12 @@
 [
   {
+    "event_id": "2026-08-18T14:45:00-CME-001",
+    "event_type": "CME",
+    "event_time": "2026-08-18T14:45:00",
+    "description": "Coronal mass ejection from N14W80",
+    "severity_score": null
+  },
+  {
     "event_id": "2026-08-17T18:45:00-CME-001",
     "event_type": "CME",
     "event_time": "2026-08-17T18:45:00",
