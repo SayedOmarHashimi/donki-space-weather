@@ -1,5 +1,33 @@
 [
   {
+    "event_id": "2026-08-21T17:00:00-CME-001",
+    "event_type": "CME",
+    "event_time": "2026-08-21T17:00:00",
+    "description": "Coronal mass ejection",
+    "severity_score": null
+  },
+  {
+    "event_id": "2026-08-21T09:09:00-FLR-001",
+    "event_type": "FLR",
+    "event_time": "2026-08-21T09:57:00",
+    "description": "Class M1.6 solar flare",
+    "severity_score": 1.6
+  },
+  {
+    "event_id": "2026-08-21T09:36:00-CME-001",
+    "event_type": "CME",
+    "event_time": "2026-08-21T09:36:00",
+    "description": "Coronal mass ejection from N04W88",
+    "severity_score": null
+  },
+  {
+    "event_id": "2026-08-21T08:00:00-CME-001",
+    "event_type": "CME",
+    "event_time": "2026-08-21T08:00:00",
+    "description": "Coronal mass ejection from N04E66",
+    "severity_score": null
+  },
+  {
     "event_id": "2026-08-20T18:48:00-CME-001",
     "event_type": "CME",
     "event_time": "2026-08-20T18:48:00",
