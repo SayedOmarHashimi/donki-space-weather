@@ -2,10 +2,11 @@ import os
 import json
 from datetime import date, timedelta
 
-import requests
 import pandas as pd
 import duckdb
 from dotenv import load_dotenv
+
+from donki_http import get_json, TransientAPIError
 
 load_dotenv()
 
@@ -15,9 +16,7 @@ DB_PATH = "warehouse/space_data.duckdb"
 def fetch_flr(start_date: str, end_date: str) -> list[dict]:
     url = "https://api.nasa.gov/DONKI/FLR"
     params = {"startDate": start_date, "endDate": end_date, "api_key": API_KEY}
-    resp = requests.get(url, params=params, timeout=30)
-    resp.raise_for_status()
-    return resp.json()
+    return get_json(url, params)
 
 def to_dataframe(records: list[dict]) -> pd.DataFrame:
     df = pd.DataFrame(records)
@@ -81,7 +80,13 @@ def upsert(df: pd.DataFrame):
 def main():
     end = date.today()
     start = end - timedelta(days=7)
-    records = fetch_flr(start.isoformat(), end.isoformat())
+    try:
+        records = fetch_flr(start.isoformat(), end.isoformat())
+    except TransientAPIError as exc:
+        # A transient NASA outage shouldn't abort the whole refresh — leave the
+        # existing raw_flr data in place and let the rest of the pipeline run.
+        print(f"WARNING: skipping FLR refresh — {exc}")
+        return
     df = to_dataframe(records)
     upsert(df)
 
