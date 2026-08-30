@@ -1,5 +1,222 @@
 [
   {
+    "event_id": "2026-08-30T04:36:00-CME-001",
+    "event_type": "CME",
+    "event_time": "2026-08-30T04:36:00",
+    "description": "Coronal mass ejection",
+    "severity_score": null
+  },
+  {
+    "event_id": "2026-08-30T03:24:00-CME-001",
+    "event_type": "CME",
+    "event_time": "2026-08-30T03:24:00",
+    "description": "Coronal mass ejection",
+    "severity_score": null
+  },
+  {
+    "event_id": "2026-08-30T01:48:00-CME-001",
+    "event_type": "CME",
+    "event_time": "2026-08-30T01:48:00",
+    "description": "Coronal mass ejection",
+    "severity_score": null
+  },
+  {
+    "event_id": "2026-08-30T01:10:00-FLR-001",
+    "event_type": "FLR",
+    "event_time": "2026-08-30T01:20:00",
+    "description": "Class C3.0 solar flare",
+    "severity_score": 3.0
+  },
+  {
+    "event_id": "2026-08-30T00:09:00-CME-001",
+    "event_type": "CME",
+    "event_time": "2026-08-30T00:09:00",
+    "description": "Coronal mass ejection",
+    "severity_score": null
+  },
+  {
+    "event_id": "2026-08-29T20:23:00-CME-001",
+    "event_type": "CME",
+    "event_time": "2026-08-29T20:23:00",
+    "description": "Coronal mass ejection",
+    "severity_score": null
+  },
+  {
+    "event_id": "2026-08-29T18:45:00-CME-001",
+    "event_type": "CME",
+    "event_time": "2026-08-29T18:45:00",
+    "description": "Coronal mass ejection",
+    "severity_score": null
+  },
+  {
+    "event_id": "2026-08-29T15:38:00-CME-001",
+    "event_type": "CME",
+    "event_time": "2026-08-29T15:38:00",
+    "description": "Coronal mass ejection",
+    "severity_score": null
+  },
+  {
+    "event_id": "2026-08-29T11:48:00-CME-001",
+    "event_type": "CME",
+    "event_time": "2026-08-29T11:48:00",
+    "description": "Coronal mass ejection",
+    "severity_score": null
+  },
+  {
+    "event_id": "2026-08-29T08:12:00-CME-001",
+    "event_type": "CME",
+    "event_time": "2026-08-29T08:12:00",
+    "description": "Coronal mass ejection",
+    "severity_score": null
+  },
+  {
+    "event_id": "2026-08-29T05:00:00-CME-001",
+    "event_type": "CME",
+    "event_time": "2026-08-29T05:00:00",
+    "description": "Coronal mass ejection",
+    "severity_score": null
+  },
+  {
+    "event_id": "2026-08-29T03:48:00-CME-001",
+    "event_type": "CME",
+    "event_time": "2026-08-29T03:48:00",
+    "description": "Coronal mass ejection",
+    "severity_score": null
+  },
+  {
+    "event_id": "2026-08-29T00:00:00-CME-001",
+    "event_type": "CME",
+    "event_time": "2026-08-29T00:00:00",
+    "description": "Coronal mass ejection",
+    "severity_score": null
+  },
+  {
+    "event_id": "2026-08-28T23:12:00-CME-001",
+    "event_type": "CME",
+    "event_time": "2026-08-28T23:12:00",
+    "description": "Coronal mass ejection",
+    "severity_score": null
+  },
+  {
+    "event_id": "2026-08-28T18:30:00-CME-001",
+    "event_type": "CME",
+    "event_time": "2026-08-28T18:30:00",
+    "description": "Coronal mass ejection",
+    "severity_score": null
+  },
+  {
+    "event_id": "2026-08-28T16:45:00-CME-001",
+    "event_type": "CME",
+    "event_time": "2026-08-28T16:45:00",
+    "description": "Coronal mass ejection",
+    "severity_score": null
+  },
+  {
+    "event_id": "2026-08-28T15:36:00-CME-001",
+    "event_type": "CME",
+    "event_time": "2026-08-28T15:36:00",
+    "description": "Coronal mass ejection",
+    "severity_score": null
+  },
+  {
+    "event_id": "2026-08-28T15:12:00-CME-001",
+    "event_type": "CME",
+    "event_time": "2026-08-28T15:12:00",
+    "description": "Coronal mass ejection from S13E40",
+    "severity_score": null
+  },
+  {
+    "event_id": "2026-08-28T12:15:00-CME-001",
+    "event_type": "CME",
+    "event_time": "2026-08-28T12:15:00",
+    "description": "Coronal mass ejection",
+    "severity_score": null
+  },
+  {
+    "event_id": "2026-08-28T10:45:00-CME-001",
+    "event_type": "CME",
+    "event_time": "2026-08-28T10:45:00",
+    "description": "Coronal mass ejection",
+    "severity_score": null
+  },
+  {
+    "event_id": "2026-08-28T10:09:00-CME-001",
+    "event_type": "CME",
+    "event_time": "2026-08-28T10:09:00",
+    "description": "Coronal mass ejection",
+    "severity_score": null
+  },
+  {
+    "event_id": "2026-08-28T08:48:00-CME-001",
+    "event_type": "CME",
+    "event_time": "2026-08-28T08:48:00",
+    "description": "Coronal mass ejection",
+    "severity_score": null
+  },
+  {
+    "event_id": "2026-08-28T05:48:00-CME-001",
+    "event_type": "CME",
+    "event_time": "2026-08-28T05:48:00",
+    "description": "Coronal mass ejection",
+    "severity_score": null
+  },
+  {
+    "event_id": "2026-08-28T00:24:00-CME-001",
+    "event_type": "CME",
+    "event_time": "2026-08-28T00:24:00",
+    "description": "Coronal mass ejection",
+    "severity_score": null
+  },
+  {
+    "event_id": "2026-08-28T00:12:00-CME-001",
+    "event_type": "CME",
+    "event_time": "2026-08-28T00:12:00",
+    "description": "Coronal mass ejection",
+    "severity_score": null
+  },
+  {
+    "event_id": "2026-08-28T00:00:00-CME-001",
+    "event_type": "CME",
+    "event_time": "2026-08-28T00:00:00",
+    "description": "Coronal mass ejection",
+    "severity_score": null
+  },
+  {
+    "event_id": "2026-08-27T21:30:00-CME-001",
+    "event_type": "CME",
+    "event_time": "2026-08-27T21:30:00",
+    "description": "Coronal mass ejection",
+    "severity_score": null
+  },
+  {
+    "event_id": "2026-08-27T21:15:00-CME-001",
+    "event_type": "CME",
+    "event_time": "2026-08-27T21:15:00",
+    "description": "Coronal mass ejection",
+    "severity_score": null
+  },
+  {
+    "event_id": "2026-08-27T20:30:00-CME-001",
+    "event_type": "CME",
+    "event_time": "2026-08-27T20:30:00",
+    "description": "Coronal mass ejection",
+    "severity_score": null
+  },
+  {
+    "event_id": "2026-08-27T18:30:00-CME-001",
+    "event_type": "CME",
+    "event_time": "2026-08-27T18:30:00",
+    "description": "Coronal mass ejection",
+    "severity_score": null
+  },
+  {
+    "event_id": "2026-08-27T18:00:00-CME-001",
+    "event_type": "CME",
+    "event_time": "2026-08-27T18:00:00",
+    "description": "Coronal mass ejection",
+    "severity_score": null
+  },
+  {
     "event_id": "2026-08-27T04:23:00-CME-001",
     "event_type": "CME",
     "event_time": "2026-08-27T04:23:00",
