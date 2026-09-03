@@ -1,5 +1,40 @@
 [
   {
+    "event_id": "2026-09-02T19:36:00-CME-001",
+    "event_type": "CME",
+    "event_time": "2026-09-02T19:36:00",
+    "description": "Coronal mass ejection from N12E90",
+    "severity_score": null
+  },
+  {
+    "event_id": "2026-09-02T18:57:00-FLR-001",
+    "event_type": "FLR",
+    "event_time": "2026-09-02T19:20:00",
+    "description": "Class M3.0 solar flare",
+    "severity_score": 3.0
+  },
+  {
+    "event_id": "2026-09-02T10:24:00-CME-001",
+    "event_type": "CME",
+    "event_time": "2026-09-02T10:24:00",
+    "description": "Coronal mass ejection",
+    "severity_score": null
+  },
+  {
+    "event_id": "2026-09-02T07:24:00-CME-001",
+    "event_type": "CME",
+    "event_time": "2026-09-02T07:24:00",
+    "description": "Coronal mass ejection from S15E55",
+    "severity_score": null
+  },
+  {
+    "event_id": "2026-09-02T00:08:00-CME-001",
+    "event_type": "CME",
+    "event_time": "2026-09-02T00:08:00",
+    "description": "Coronal mass ejection from N05W105",
+    "severity_score": null
+  },
+  {
     "event_id": "2026-09-01T23:00:00-CME-001",
     "event_type": "CME",
     "event_time": "2026-09-01T23:00:00",
