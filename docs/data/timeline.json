@@ -1,5 +1,75 @@
 [
   {
+    "event_id": "2026-09-04T21:45:00-CME-001",
+    "event_type": "CME",
+    "event_time": "2026-09-04T21:45:00",
+    "description": "Coronal mass ejection",
+    "severity_score": null
+  },
+  {
+    "event_id": "2026-09-04T20:15:00-CME-001",
+    "event_type": "CME",
+    "event_time": "2026-09-04T20:15:00",
+    "description": "Coronal mass ejection from N12E55",
+    "severity_score": null
+  },
+  {
+    "event_id": "2026-09-04T19:02:00-FLR-001",
+    "event_type": "FLR",
+    "event_time": "2026-09-04T19:30:00",
+    "description": "Class C6.7 solar flare",
+    "severity_score": 6.7
+  },
+  {
+    "event_id": "2026-09-04T17:15:00-CME-001",
+    "event_type": "CME",
+    "event_time": "2026-09-04T17:15:00",
+    "description": "Coronal mass ejection",
+    "severity_score": null
+  },
+  {
+    "event_id": "2026-09-04T16:45:00-CME-001",
+    "event_type": "CME",
+    "event_time": "2026-09-04T16:45:00",
+    "description": "Coronal mass ejection",
+    "severity_score": null
+  },
+  {
+    "event_id": "2026-09-04T15:24:00-CME-001",
+    "event_type": "CME",
+    "event_time": "2026-09-04T15:24:00",
+    "description": "Coronal mass ejection from N12E60",
+    "severity_score": null
+  },
+  {
+    "event_id": "2026-09-04T13:52:00-CME-001",
+    "event_type": "CME",
+    "event_time": "2026-09-04T13:52:00",
+    "description": "Coronal mass ejection from S17E80",
+    "severity_score": null
+  },
+  {
+    "event_id": "2026-09-04T08:48:00-CME-001",
+    "event_type": "CME",
+    "event_time": "2026-09-04T08:48:00",
+    "description": "Coronal mass ejection",
+    "severity_score": null
+  },
+  {
+    "event_id": "2026-09-04T07:45:00-FLR-001",
+    "event_type": "FLR",
+    "event_time": "2026-09-04T07:53:00",
+    "description": "Class M1.2 solar flare",
+    "severity_score": 1.2
+  },
+  {
+    "event_id": "2026-09-04T06:24:00-CME-001",
+    "event_type": "CME",
+    "event_time": "2026-09-04T06:24:00",
+    "description": "Coronal mass ejection from N12E63",
+    "severity_score": null
+  },
+  {
     "event_id": "2026-09-03T22:36:00-CME-001",
     "event_type": "CME",
     "event_time": "2026-09-03T22:36:00",
