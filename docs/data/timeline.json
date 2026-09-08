@@ -1,5 +1,26 @@
 [
   {
+    "event_id": "2026-09-07T09:23:00-CME-001",
+    "event_type": "CME",
+    "event_time": "2026-09-07T09:23:00",
+    "description": "Coronal mass ejection from N12E22",
+    "severity_score": null
+  },
+  {
+    "event_id": "2026-09-07T02:48:00-CME-001",
+    "event_type": "CME",
+    "event_time": "2026-09-07T02:48:00",
+    "description": "Coronal mass ejection",
+    "severity_score": null
+  },
+  {
+    "event_id": "2026-09-07T01:48:00-CME-001",
+    "event_type": "CME",
+    "event_time": "2026-09-07T01:48:00",
+    "description": "Coronal mass ejection",
+    "severity_score": null
+  },
+  {
     "event_id": "2026-09-06T21:53:00-CME-001",
     "event_type": "CME",
     "event_time": "2026-09-06T21:53:00",
