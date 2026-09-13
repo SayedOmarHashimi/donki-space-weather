@@ -1,5 +1,19 @@
 [
   {
+    "event_id": "2026-09-12T08:38:00-CME-001",
+    "event_type": "CME",
+    "event_time": "2026-09-12T08:38:00",
+    "description": "Coronal mass ejection",
+    "severity_score": null
+  },
+  {
+    "event_id": "2026-09-12T01:26:00-CME-001",
+    "event_type": "CME",
+    "event_time": "2026-09-12T01:26:00",
+    "description": "Coronal mass ejection",
+    "severity_score": null
+  },
+  {
     "event_id": "2026-09-11T23:12:00-CME-001",
     "event_type": "CME",
     "event_time": "2026-09-11T23:12:00",
