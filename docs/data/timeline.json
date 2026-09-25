@@ -1,5 +1,26 @@
 [
   {
+    "event_id": "2026-09-24T14:45:00-CME-001",
+    "event_type": "CME",
+    "event_time": "2026-09-24T14:45:00",
+    "description": "Coronal mass ejection from S35W70",
+    "severity_score": null
+  },
+  {
+    "event_id": "2026-09-24T09:23:00-CME-001",
+    "event_type": "CME",
+    "event_time": "2026-09-24T09:23:00",
+    "description": "Coronal mass ejection",
+    "severity_score": null
+  },
+  {
+    "event_id": "2026-09-24T02:53:00-CME-001",
+    "event_type": "CME",
+    "event_time": "2026-09-24T02:53:00",
+    "description": "Coronal mass ejection from N03W32",
+    "severity_score": null
+  },
+  {
     "event_id": "2026-09-21T09:09:00-CME-001",
     "event_type": "CME",
     "event_time": "2026-09-21T09:09:00",
