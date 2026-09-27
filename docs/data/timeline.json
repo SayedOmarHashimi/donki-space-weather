@@ -1,5 +1,47 @@
 [
   {
+    "event_id": "2026-09-26T20:00:00-CME-001",
+    "event_type": "CME",
+    "event_time": "2026-09-26T20:00:00",
+    "description": "Coronal mass ejection",
+    "severity_score": null
+  },
+  {
+    "event_id": "2026-09-26T19:36:00-CME-001",
+    "event_type": "CME",
+    "event_time": "2026-09-26T19:36:00",
+    "description": "Coronal mass ejection from S20W135",
+    "severity_score": null
+  },
+  {
+    "event_id": "2026-09-26T15:24:00-CME-001",
+    "event_type": "CME",
+    "event_time": "2026-09-26T15:24:00",
+    "description": "Coronal mass ejection",
+    "severity_score": null
+  },
+  {
+    "event_id": "2026-09-26T02:24:00-CME-001",
+    "event_type": "CME",
+    "event_time": "2026-09-26T02:24:00",
+    "description": "Coronal mass ejection",
+    "severity_score": null
+  },
+  {
+    "event_id": "2026-09-26T00:48:00-CME-001",
+    "event_type": "CME",
+    "event_time": "2026-09-26T00:48:00",
+    "description": "Coronal mass ejection",
+    "severity_score": null
+  },
+  {
+    "event_id": "2026-09-25T23:00:00-CME-001",
+    "event_type": "CME",
+    "event_time": "2026-09-25T23:00:00",
+    "description": "Coronal mass ejection",
+    "severity_score": null
+  },
+  {
     "event_id": "2026-09-25T20:45:00-CME-001",
     "event_type": "CME",
     "event_time": "2026-09-25T20:45:00",
