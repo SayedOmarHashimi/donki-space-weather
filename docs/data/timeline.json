@@ -1,5 +1,26 @@
 [
   {
+    "event_id": "2026-09-28T21:24:00-CME-001",
+    "event_type": "CME",
+    "event_time": "2026-09-28T21:24:00",
+    "description": "Coronal mass ejection",
+    "severity_score": null
+  },
+  {
+    "event_id": "2026-09-28T16:18:00-CME-001",
+    "event_type": "CME",
+    "event_time": "2026-09-28T16:18:00",
+    "description": "Coronal mass ejection",
+    "severity_score": null
+  },
+  {
+    "event_id": "2026-09-28T14:36:00-CME-001",
+    "event_type": "CME",
+    "event_time": "2026-09-28T14:36:00",
+    "description": "Coronal mass ejection from N27W50",
+    "severity_score": null
+  },
+  {
     "event_id": "2026-09-28T04:24:00-CME-001",
     "event_type": "CME",
     "event_time": "2026-09-28T04:24:00",
@@ -10,6 +31,13 @@
     "event_id": "2026-09-28T04:12:00-CME-001",
     "event_type": "CME",
     "event_time": "2026-09-28T04:12:00",
+    "description": "Coronal mass ejection",
+    "severity_score": null
+  },
+  {
+    "event_id": "2026-09-28T01:26:00-CME-001",
+    "event_type": "CME",
+    "event_time": "2026-09-28T01:26:00",
     "description": "Coronal mass ejection",
     "severity_score": null
   },
